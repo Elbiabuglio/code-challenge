@@ -4,14 +4,14 @@ from sqlalchemy import create_engine
 from datetime import datetime
 
 # Configurações do banco de dados PostgreSQL
-DB_HOST = 'localhost'  # Substitua pelo endereço do seu servidor
+DB_HOST = 'localhost'  
 DB_USER = 'postgres'
 DB_PASSWORD = '1022'
 DB_NAME = 'northwind'
 DB_PORT = '5432'
 
 # Configurações do arquivo CSV
-CSV_PATH = 'order_details.csv'  # Substitua pelo caminho do seu arquivo CSV
+CSV_PATH = r'C:\Users\Elbia Simone\Desktop\desafio de código\code-challenge\data\order_details.csv'  
 
 # Criar conexão com o banco de dados
 def get_postgres_connection():
@@ -37,8 +37,10 @@ def extract_postgres_data(table_name):
 
 # Função para salvar dados no disco local
 def save_to_local(data, source_type, table_name=None):
-    # Criar o caminho do arquivo
+    # Obter a data atual no formato YYYY-MM-DD
     today = datetime.today().strftime('%Y-%m-%d')
+    
+    # Criar o caminho da pasta com base na fonte e tabela
     if source_type == "postgres":
         folder = f"data/postgres/{table_name}/{today}/"
     elif source_type == "csv":
@@ -50,11 +52,16 @@ def save_to_local(data, source_type, table_name=None):
     # Criar a pasta, se não existir
     os.makedirs(folder, exist_ok=True)
 
-    # Salvar os dados no arquivo
-    file_name = f"{table_name or 'csv_data'}.csv"
+    # Criar o nome do arquivo
+    file_name = f"{table_name or 'csv_data'}.csv"  # Nome do arquivo para CSV ou PostgreSQL
     file_path = os.path.join(folder, file_name)
-    data.to_csv(file_path, index=False)
-    print(f"Dados salvos em: {file_path}")
+
+    # Salvar o DataFrame como arquivo CSV
+    try:
+        data.to_csv(file_path, index=False)
+        print(f"Dados salvos em: {file_path}")
+    except Exception as e:
+        print(f"Erro ao salvar o arquivo: {e}")
 
 # Extrair dados do PostgreSQL e salvar no disco
 def postgres_pipeline():
@@ -67,8 +74,8 @@ def postgres_pipeline():
 # Extrair dados do CSV e salvar no disco
 def csv_pipeline():
     try:
-        data = pd.read_csv(CSV_PATH)
-        save_to_local(data, "csv")
+        data = pd.read_csv(CSV_PATH)  # Ler o arquivo CSV
+        save_to_local(data, "csv")  # Salvar no disco
     except Exception as e:
         print(f"Erro ao processar o arquivo CSV: {e}")
 
