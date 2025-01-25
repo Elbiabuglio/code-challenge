@@ -53,7 +53,7 @@ def save_to_local(data, source_type, table_name=None):
     os.makedirs(folder, exist_ok=True)
 
     # Criar o nome do arquivo
-    file_name = f"{table_name or 'csv_data'}.csv"  # Nome do arquivo para CSV ou PostgreSQL
+    file_name = f"{table_name or 'csv_data'}.csv"  
     file_path = os.path.join(folder, file_name)
 
     # Salvar o DataFrame como arquivo CSV
@@ -65,7 +65,7 @@ def save_to_local(data, source_type, table_name=None):
 
 # Extrair dados do PostgreSQL e salvar no disco
 def postgres_pipeline():
-    tables = ['customers', 'orders', 'products']  # Tabelas do banco de dados
+    tables = ['customers', 'orders', 'products']  
     for table in tables:
         data = extract_postgres_data(table)
         if data is not None:
